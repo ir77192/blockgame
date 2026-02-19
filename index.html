@@ -231,6 +231,10 @@ document.getElementById("placeSound").play();
 // 사용한 블록 제거
 draggingShape.element.remove();
 
+// 🔥 currentBlocks에서도 제거
+currentBlocks = currentBlocks.filter(s => s !== draggingShape.shape);
+
+
 // 블록이 0개면 새로 생성
 if(document.getElementById("blocks").children.length===0){
     generateBlocks();
