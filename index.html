@@ -291,6 +291,10 @@ function placeShape(shape,r,c,color){
     drawBoard();
     updateScore();
     checkGameOver();
+    if(checkGameOver()){
+    showGameOver();
+}
+
 }
 
 function clearLines(){
