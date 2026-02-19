@@ -25,6 +25,7 @@ body{
 .board{
     display:grid;
     grid-template-columns:repeat(8,1fr);
+    gap:4px;
     gap:2px;
     margin:15px 0;
 }
@@ -38,21 +39,8 @@ body{
     transition:0.15s;
 }
 
-.cell::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius:8px;
-}
-
-.cell.preview-valid::after{
-    background:rgba(129,236,236,0.9);
-}
-
-.cell.preview-invalid::after{
-    background:rgba(255,118,117,0.9);
-}
-
+.cell.preview-valid{background:#81ecec;}
+.cell.preview-invalid{background:#ff7675;}
 
 .blocks{display:flex;justify-content:space-around;}
 .block{display:grid;gap:3px;touch-action:none;cursor:pointer;}
