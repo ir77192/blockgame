@@ -223,6 +223,8 @@ function generateBlocks(){
 
         blocksDiv.appendChild(blockDiv);
     });
+    
+    checkGameOver();
 }
 
 document.addEventListener("pointermove",(e)=>{
@@ -321,7 +323,6 @@ function placeShape(shape,r,c,color){
 
     drawBoard();
     updateScore();
-   checkGameOver();
 
 
 }
