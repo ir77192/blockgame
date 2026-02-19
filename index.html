@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Block Blast Ultimate</title>
+<title>Block Game</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
 body{
@@ -175,7 +175,7 @@ function generateBlocks(){
         });
 
         blockDiv.addEventListener("pointerdown",(e)=>{
-            draggingShape={shape,color};
+            draggingShape={shape,color,element:blockDiv};
             dragPreview=blockDiv.cloneNode(true);
             dragPreview.style.position="fixed";
             dragPreview.style.opacity="0.7";
@@ -209,7 +209,16 @@ document.addEventListener("pointerup",(e)=>{
         const c=parseInt(target.dataset.c);
         if(canPlace(draggingShape.shape,r,c)){
             placeShape(draggingShape.shape,r,c,draggingShape.color);
-            document.getElementById("placeSound").play();
+document.getElementById("placeSound").play();
+
+// 사용한 블록 제거
+draggingShape.element.remove();
+
+// 블록이 0개면 새로 생성
+if(document.getElementById("blocks").children.length===0){
+    generateBlocks();
+}
+
         }
     }
     draggingShape=null;
@@ -269,7 +278,6 @@ function placeShape(shape,r,c,color){
     }
 
     drawBoard();
-    generateBlocks();
     updateScore();
     checkGameOver();
 }
