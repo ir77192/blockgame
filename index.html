@@ -132,6 +132,13 @@ let dragPreview=null;
 function startGame(){
     document.getElementById("menu").style.display="none";
     document.getElementById("game").style.display="block";
+
+    // 🔥 오디오 활성화용
+    document.getElementById("placeSound").play().then(()=>{
+        document.getElementById("placeSound").pause();
+        document.getElementById("placeSound").currentTime=0;
+    }).catch(()=>{});
+
     init();
 }
 
@@ -249,7 +256,8 @@ document.addEventListener("pointerup",(e)=>{
         const c=parseInt(target.dataset.c);
         if(canPlace(draggingShape.shape,r,c)){
             placeShape(draggingShape.shape,r,c,draggingShape.color);
-document.getElementById("placeSound").play();
+document.getElementById("placeSound").play().catch(()=>{});
+
 
 // 사용한 블록 제거
 draggingShape.element.remove();
@@ -316,7 +324,8 @@ function placeShape(shape,r,c,color){
         combo++;
         score+=cleared*50*combo;
         document.getElementById("combo").textContent=`콤보 x${combo}`;
-        document.getElementById("clearSound").play();
+        document.getElementById("clearSound").play().catch(()=>{});
+
     }else{
         combo=0;
         document.getElementById("combo").textContent="";
@@ -400,7 +409,8 @@ function checkGameOver(){
         }
     }
 
-    document.getElementById("overSound").play();
+    document.getElementById("overSound").play().catch(()=>{});
+
     setTimeout(()=>{
         alert("게임 오버!");
         goMenu();
