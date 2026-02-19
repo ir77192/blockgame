@@ -25,7 +25,6 @@ body{
 .board{
     display:grid;
     grid-template-columns:repeat(8,1fr);
-    gap:4px;
     gap:2px;
     margin:15px 0;
 }
@@ -103,6 +102,8 @@ body{
 const SIZE=8;
 let board=[],score=0,combo=0;
 let bestScore=localStorage.getItem("bestScore")||0;
+let currentBlocks = [];
+
 document.getElementById("bestScore").textContent=bestScore;
 
 const shapes=[
@@ -165,8 +166,13 @@ function drawBoard(){
 function generateBlocks(){
     const blocksDiv=document.getElementById("blocks");
     blocksDiv.innerHTML="";
+    
+    currentBlocks = [];
+
     for(let i=0;i<3;i++){
         const shape=JSON.parse(JSON.stringify(shapes[Math.floor(Math.random()*shapes.length)]));
+        currentBlocks.push(shape);
+
         const color=colors[Math.floor(Math.random()*colors.length)];
 
         const blockDiv=document.createElement("div");
@@ -290,9 +296,8 @@ function placeShape(shape,r,c,color){
 
     drawBoard();
     updateScore();
-    checkGameOver();
-    if(checkGameOver()){
-    showGameOver();
+   checkGameOver();
+
 }
 
 }
@@ -355,19 +360,28 @@ function updateScore(){
 }
 
 function checkGameOver(){
-    for(let shape of shapes){
+
+    if(currentBlocks.length === 0) return false;
+
+    for(let shape of currentBlocks){
         for(let r=0;r<SIZE;r++){
             for(let c=0;c<SIZE;c++){
-                if(canPlace(shape,r,c)) return;
+                if(canPlace(shape,r,c)){
+                    return false; // 하나라도 놓을 수 있으면 계속
+                }
             }
         }
     }
+
     document.getElementById("overSound").play();
     setTimeout(()=>{
         alert("게임 오버!");
         goMenu();
     },200);
+
+    return true;
 }
+
 </script>
 </body>
 </html>
