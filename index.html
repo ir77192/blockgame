@@ -3,80 +3,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Block Blast Lite</title>
+<title>Block Blast Pro</title>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
+
 body{
-    background:#fdf6e3;
+    background:linear-gradient(135deg,#fff9c4,#ffe0b2);
     display:flex;
     justify-content:center;
     align-items:center;
     min-height:100vh;
 }
+
 .container{
     width:100%;
     max-width:500px;
     text-align:center;
 }
+
 .menu,.game{
-    background:#fff;
+    background:white;
     padding:20px;
     border-radius:20px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    box-shadow:0 15px 30px rgba(0,0,0,0.1);
 }
+
 .game{display:none;}
-h1{margin-bottom:15px;color:#ff7675;}
+
 button{
     padding:12px 20px;
     border:none;
     border-radius:12px;
-    background:#74b9ff;
+    background:#ff7675;
     color:white;
     font-size:16px;
     cursor:pointer;
 }
+
 .board{
     display:grid;
     grid-template-columns:repeat(8,1fr);
-    gap:3px;
+    gap:4px;
     margin:15px 0;
 }
+
 .cell{
     width:100%;
     padding-top:100%;
     position:relative;
-    background:#ecf0f1;
+    background:#f1f2f6;
     border-radius:6px;
+    transition:0.2s;
 }
+
 .cell.filled{
     background:#55efc4;
+    animation:pop 0.2s ease;
 }
+
+@keyframes pop{
+    0%{transform:scale(0.6);}
+    100%{transform:scale(1);}
+}
+
+.clear{
+    animation:clearAnim 0.3s forwards;
+}
+
+@keyframes clearAnim{
+    0%{background:#ff7675;}
+    100%{background:#f1f2f6;}
+}
+
 .blocks{
     display:flex;
     justify-content:space-around;
-    margin-top:10px;
 }
+
 .block{
     display:grid;
-    gap:2px;
-    cursor:pointer;
+    gap:3px;
+    touch-action:none;
 }
+
 .block div{
-    width:20px;
-    height:20px;
+    width:22px;
+    height:22px;
     background:#a29bfe;
     border-radius:4px;
 }
+
 .score{
     margin:10px 0;
+    font-weight:bold;
+}
+
+.combo{
+    color:#e17055;
+    font-weight:bold;
+    height:20px;
 }
 </style>
 </head>
+
 <body>
 <div class="container">
 
 <div class="menu" id="menu">
-<h1>Block Blast</h1>
+<h1>Block Blast Pro</h1>
 <p>최고 기록: <span id="bestScore">0</span></p>
 <br>
 <button onclick="startGame()">게임 시작</button>
@@ -84,6 +119,7 @@ button{
 
 <div class="game" id="game">
 <h2>점수: <span id="score">0</span></h2>
+<div class="combo" id="combo"></div>
 <div class="board" id="board"></div>
 <div class="blocks" id="blocks"></div>
 <br>
@@ -96,19 +132,19 @@ button{
 const SIZE=8;
 let board=[];
 let score=0;
+let combo=0;
 let bestScore=localStorage.getItem("bestScore")||0;
+
 document.getElementById("bestScore").textContent=bestScore;
 
 const shapes=[
-[[1]],
-[[1,1]],
-[[1],[1]],
-[[1,1,1]],
-[[1],[1],[1]],
-[[1,1],[1,1]],
-[[1,0],[1,1]],
-[[0,1],[1,1]]
+[[1]],[[1,1]],[[1],[1]],[[1,1,1]],
+[[1],[1],[1]],[[1,1],[1,1]],
+[[1,0],[1,1]],[[0,1],[1,1]]
 ];
+
+let currentBlocks=[];
+let draggingShape=null;
 
 function startGame(){
     document.getElementById("menu").style.display="none";
@@ -124,6 +160,7 @@ function goMenu(){
 function init(){
     board=Array(SIZE).fill().map(()=>Array(SIZE).fill(0));
     score=0;
+    combo=0;
     updateScore();
     drawBoard();
     generateBlocks();
@@ -139,14 +176,11 @@ function drawBoard(){
             if(board[r][c]) cell.classList.add("filled");
             cell.dataset.r=r;
             cell.dataset.c=c;
-            cell.onclick=()=>placeBlock(r,c);
+            cell.addEventListener("pointerup",handleDrop);
             boardDiv.appendChild(cell);
         }
     }
 }
-
-let currentBlocks=[];
-let selectedBlock=null;
 
 function generateBlocks(){
     const blocksDiv=document.getElementById("blocks");
@@ -157,7 +191,7 @@ function generateBlocks(){
         currentBlocks.push(shape);
         const blockDiv=document.createElement("div");
         blockDiv.className="block";
-        blockDiv.style.gridTemplateColumns=`repeat(${shape[0].length},20px)`;
+        blockDiv.style.gridTemplateColumns=`repeat(${shape[0].length},22px)`;
         shape.forEach(row=>{
             row.forEach(cell=>{
                 const mini=document.createElement("div");
@@ -165,26 +199,19 @@ function generateBlocks(){
                 blockDiv.appendChild(mini);
             });
         });
-        blockDiv.onclick=()=>selectedBlock=shape;
+        blockDiv.addEventListener("pointerdown",()=>draggingShape=shape);
         blocksDiv.appendChild(blockDiv);
     }
 }
 
-function placeBlock(r,c){
-    if(!selectedBlock) return;
-    if(canPlace(selectedBlock,r,c)){
-        selectedBlock.forEach((row,i)=>{
-            row.forEach((cell,j)=>{
-                if(cell) board[r+i][c+j]=1;
-            });
-        });
-        score+=10;
-        checkClear();
-        selectedBlock=null;
-        drawBoard();
+function handleDrop(e){
+    if(!draggingShape) return;
+    const r=parseInt(e.target.dataset.r);
+    const c=parseInt(e.target.dataset.c);
+    if(canPlace(draggingShape,r,c)){
+        place(draggingShape,r,c);
+        draggingShape=null;
         generateBlocks();
-        updateScore();
-        checkGameOver();
     }
 }
 
@@ -199,17 +226,40 @@ function canPlace(shape,r,c){
     return true;
 }
 
-function checkClear(){
+function place(shape,r,c){
+    shape.forEach((row,i)=>{
+        row.forEach((cell,j)=>{
+            if(cell) board[r+i][c+j]=1;
+        });
+    });
+    score+=10;
+    const cleared=clearLines();
+    if(cleared){
+        combo++;
+        score+=combo*50;
+        document.getElementById("combo").textContent=`🔥 ${combo} COMBO!`;
+    }else{
+        combo=0;
+        document.getElementById("combo").textContent="";
+    }
+    drawBoard();
+    updateScore();
+}
+
+function clearLines(){
+    let cleared=false;
+
     for(let i=0;i<SIZE;i++){
         if(board[i].every(v=>v)){
             board[i].fill(0);
-            score+=50;
+            cleared=true;
         }
         if(board.every(row=>row[i])){
             for(let r=0;r<SIZE;r++) board[r][i]=0;
-            score+=50;
+            cleared=true;
         }
     }
+    return cleared;
 }
 
 function updateScore(){
@@ -220,18 +270,7 @@ function updateScore(){
         document.getElementById("bestScore").textContent=bestScore;
     }
 }
-
-function checkGameOver(){
-    for(let shape of currentBlocks){
-        for(let r=0;r<SIZE;r++){
-            for(let c=0;c<SIZE;c++){
-                if(canPlace(shape,r,c)) return;
-            }
-        }
-    }
-    alert("게임 오버!");
-    goMenu();
-}
 </script>
+
 </body>
 </html>
