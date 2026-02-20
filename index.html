@@ -358,8 +358,11 @@ if (cleared > 0) {
 
 }
 
+setTimeout(()=>{
     drawBoard();
     updateScore();
+},300);
+
 
 
 
@@ -400,7 +403,6 @@ function clearLines(){
         linesToClear.forEach(([r,c])=>{
             board[r][c]=null;
         });
-        drawBoard();
     },300);
 
     return linesToClear.length>0 ? 1 : 0;
