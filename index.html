@@ -327,10 +327,14 @@ function placeShape(shape,r,c,color){
     });
 
     score+=10;
+    if (navigator.vibrate) navigator.vibrate(40);
+
     let cleared=clearLines();
     if(cleared>0){
         combo++;
         score+=cleared*50*combo;
+        if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+
         document.getElementById("combo").textContent=`콤보 x${combo}`;
         document.getElementById("clearSound").play().catch(()=>{});
 
