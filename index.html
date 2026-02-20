@@ -114,7 +114,7 @@ let bestScore=localStorage.getItem("bestScore")||0;
 let currentBlocks = [];
 let userBlockColor = localStorage.getItem("userBlockColor") || null;
 let userBoardColor = localStorage.getItem("userBoardColor") || "#ecf0f1";
-
+document.body.style.background = userBoardColor;
 
 document.getElementById("bestScore").textContent=bestScore;
 
@@ -168,7 +168,8 @@ blockPicker.addEventListener("input", e=>{
 boardPicker.addEventListener("input", e=>{
     userBoardColor = e.target.value;
     localStorage.setItem("userBoardColor", userBoardColor);
-    drawBoard();
+
+    document.body.style.background = userBoardColor;
 });
 
     init();
