@@ -209,6 +209,8 @@ function generateBlocks(){
         const blockDiv = document.createElement("div");
         blockDiv.className = "block";
         blockDiv.style.gridTemplateColumns = "repeat(" + shape[0].length + ",24px)";
+        blockDiv.style.gridTemplateRows = "repeat(" + shape.length + ",24px)";
+
 
         shape.forEach(row=>{
             row.forEach(cell=>{
