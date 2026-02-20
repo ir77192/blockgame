@@ -285,7 +285,10 @@ currentBlocks = currentBlocks.filter(s => s !== draggingShape.shape);
 if(document.getElementById("blocks").children.length===0){
     generateBlocks();
 }
-checkGameOver();
+
+setTimeout(()=>{
+    checkGameOver();
+},300);
 
         }
     }
