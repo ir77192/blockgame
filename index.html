@@ -146,13 +146,6 @@ function startGame(){
         document.getElementById("placeSound").currentTime=0;
     }).catch(()=>{});
 
-// 보드 배경색 변경
-boardPicker.addEventListener("input", e=>{
-    userBoardColor = e.target.value;
-    localStorage.setItem("userBoardColor", userBoardColor);
-
-    document.body.style.background = userBoardColor;
-});
 
     init();
 }
