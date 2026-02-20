@@ -219,19 +219,24 @@ function generateBlocks(){
         });
 
         blockDiv.addEventListener("pointerdown",()=>{
-            draggingShape={shape,color,element:blockDiv};
-            dragPreview=blockDiv.cloneNode(true);
-            dragPreview.style.position="fixed";
-            dragPreview.style.opacity="0.7";
-            dragPreview.style.pointerEvents="none";
-            dragPreview.style.transform="scale(2.2)";
-dragPreview.style.transformOrigin="top left";
+    draggingShape={shape,color,element:blockDiv};
 
-            document.body.appendChild(dragPreview);
-        });
+    dragPreview=blockDiv.cloneNode(true);
+    dragPreview.style.position="fixed";
+    dragPreview.style.opacity="0.7";
+    dragPreview.style.pointerEvents="none";
 
-        blocksDiv.appendChild(blockDiv);
-    });
+    // 🔥 자동 크기 계산
+    const boardCell = document.querySelector(".cell");
+    const boardSize = boardCell.getBoundingClientRect().width;
+    const blockSize = 24; // 현재 블록 한칸 크기
+    const scale = boardSize / blockSize;
+
+    dragPreview.style.transform = `scale(${scale})`;
+    dragPreview.style.transformOrigin="top left";
+
+    document.body.appendChild(dragPreview);
+});
 
 
 }
