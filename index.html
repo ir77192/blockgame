@@ -127,6 +127,8 @@ const colors=[
 
 let draggingShape=null;
 let dragPreview=null;
+let failCount = 0;
+
 
 function startGame(){
     document.getElementById("menu").style.display="none";
@@ -149,6 +151,7 @@ function goMenu(){
 function init(){
     board=Array(SIZE).fill().map(()=>Array(SIZE).fill(null));
     score=0;combo=0;
+    failCount=0;
     updateScore();
     drawBoard();
     generateBlocks();
