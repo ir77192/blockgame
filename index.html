@@ -219,7 +219,9 @@ function generateBlocks(){
 
     currentBlocks.forEach(shape=>{
 
-  const color = colors[Math.floor(Math.random()*colors.length)];
+ const c1 = colors[Math.floor(Math.random()*colors.length)];
+const c2 = colors[Math.floor(Math.random()*colors.length)];
+const gradient = `linear-gradient(135deg, ${c1}, ${c2})`;
 
         const blockDiv = document.createElement("div");
         blockDiv.className = "block";
