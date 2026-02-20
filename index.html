@@ -240,7 +240,7 @@ const gradient = `linear-gradient(135deg, ${c1}, ${c2})`;
 
         blockDiv.addEventListener("pointerdown", function(){
 
-            draggingShape = {shape, color, element:blockDiv};
+            draggingShape = {shape, color: gradient, element:blockDiv};
 
             dragPreview = blockDiv.cloneNode(true);
             dragPreview.style.position = "fixed";
