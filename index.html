@@ -83,12 +83,7 @@ body{
 
 <h3>🧱 보드 배경 색</h3>
 <input type="color" id="boardColorPicker">
-<br><br>
-<h3>🎨 블록 색</h3>
-<input type="color" id="blockColorPicker">
 
-<h3>🧱 보드 배경 색</h3>
-<input type="color" id="boardColorPicker">
 
 <h1 style="color:#ff7675;">Block Game</h1>
 <p>최고 기록: <span id="bestScore">0</span></p>
@@ -173,7 +168,7 @@ blockPicker.addEventListener("input", e=>{
 boardPicker.addEventListener("input", e=>{
     userBoardColor = e.target.value;
     localStorage.setItem("userBoardColor", userBoardColor);
-    updateBoard();
+    drawBoard();
 });
 
     init();
