@@ -77,6 +77,19 @@ body{
 <div class="container">
 
 <div class="menu" id="menu">
+<br><br>
+<h3>🎨 블록 색</h3>
+<input type="color" id="blockColorPicker">
+
+<h3>🧱 보드 배경 색</h3>
+<input type="color" id="boardColorPicker">
+<br><br>
+<h3>🎨 블록 색</h3>
+<input type="color" id="blockColorPicker">
+
+<h3>🧱 보드 배경 색</h3>
+<input type="color" id="boardColorPicker">
+
 <h1 style="color:#ff7675;">Block Game</h1>
 <p>최고 기록: <span id="bestScore">0</span></p>
 <br>
@@ -104,6 +117,9 @@ const SIZE=8;
 let board=[],score=0,combo=0;
 let bestScore=localStorage.getItem("bestScore")||0;
 let currentBlocks = [];
+let userBlockColor = localStorage.getItem("userBlockColor") || null;
+let userBoardColor = localStorage.getItem("userBoardColor") || "#ecf0f1";
+
 
 document.getElementById("bestScore").textContent=bestScore;
 
@@ -140,6 +156,25 @@ function startGame(){
         document.getElementById("placeSound").pause();
         document.getElementById("placeSound").currentTime=0;
     }).catch(()=>{});
+const blockPicker = document.getElementById("blockColorPicker");
+const boardPicker = document.getElementById("boardColorPicker");
+
+// 초기값 세팅
+if(userBlockColor) blockPicker.value = userBlockColor;
+boardPicker.value = userBoardColor;
+
+// 블록 색 변경
+blockPicker.addEventListener("input", e=>{
+    userBlockColor = e.target.value;
+    localStorage.setItem("userBlockColor", userBlockColor);
+});
+
+// 보드 배경색 변경
+boardPicker.addEventListener("input", e=>{
+    userBoardColor = e.target.value;
+    localStorage.setItem("userBoardColor", userBoardColor);
+    updateBoard();
+});
 
     init();
 }
@@ -165,7 +200,13 @@ function drawBoard(){
         for(let c=0;c<SIZE;c++){
             const cell=document.createElement("div");
             cell.className="cell";
-            if(board[r][c]) cell.style.background=board[r][c];
+
+            if(board[r][c]){
+                cell.style.background = board[r][c];
+            }else{
+                cell.style.background = userBoardColor;
+            }
+
             cell.dataset.r=r;
             cell.dataset.c=c;
             boardDiv.appendChild(cell);
@@ -206,7 +247,10 @@ function generateBlocks(){
 
     currentBlocks.forEach(shape=>{
 
-        const color = colors[Math.floor(Math.random()*colors.length)];
+        const color = userBlockColor
+    ? userBlockColor
+    : colors[Math.floor(Math.random()*colors.length)];
+
         const blockDiv = document.createElement("div");
         blockDiv.className = "block";
         blockDiv.style.gridTemplateColumns = "repeat(" + shape[0].length + ",24px)";
