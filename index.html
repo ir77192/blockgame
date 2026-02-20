@@ -334,19 +334,29 @@ function placeShape(shape,r,c,color){
     score+=10;
     if (navigator.vibrate) navigator.vibrate(40);
 
-    let cleared=clearLines();
-    if(cleared>0){
-        combo++;
-        score+=cleared*50*combo;
-        if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+    let cleared = clearLines();
 
-        document.getElementById("combo").textContent=`콤보 x${combo}`;
-        document.getElementById("clearSound").play().catch(()=>{});
+if (cleared > 0) {
 
-    }else{
-        combo=0;
-        document.getElementById("combo").textContent="";
+    combo++;
+    failCount = 0;   // 성공하면 실패 초기화
+
+    score += cleared * 50 * combo;
+
+    document.getElementById("combo").textContent = `콤보 x${combo}`;
+    document.getElementById("clearSound").play().catch(()=>{});
+
+} else {
+
+    failCount++;   // 실패 증가
+
+    if (failCount >= 3) {
+        combo = 0;
+        failCount = 0;
+        document.getElementById("combo").textContent = "";
     }
+
+}
 
     drawBoard();
     updateScore();
