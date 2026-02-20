@@ -263,6 +263,8 @@ document.addEventListener("pointerup",(e)=>{
         const r=parseInt(target.dataset.r);
         const c=parseInt(target.dataset.c);
         if(canPlace(draggingShape.shape,r,c)){
+            if (navigator.vibrate) navigator.vibrate(50);
+
             placeShape(draggingShape.shape,r,c,draggingShape.color);
 document.getElementById("placeSound").play().catch(()=>{});
 
