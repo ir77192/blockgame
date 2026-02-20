@@ -232,7 +232,7 @@ const gradient = `linear-gradient(135deg, ${c1}, ${c2})`;
         shape.forEach(row=>{
             row.forEach(cell=>{
                 const mini = document.createElement("div");
-                if(cell) mini.style.background = color;
+               if(cell) mini.style.background = gradient;
                 else mini.style.visibility = "hidden";
                 blockDiv.appendChild(mini);
             });
