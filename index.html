@@ -270,8 +270,8 @@ document.addEventListener("pointermove",(e)=>{
     const offsetX = 30;   // 좌우 중심 보정
     const offsetY = 90;   // 🔥 위로 올리는 거리 (값 키우면 더 위)
 
-    dragPreview.style.left = e.clientX - offsetX + "px";
-    dragPreview.style.top  = e.clientY - offsetY + "px";
+    dragPreview.style.left = e.clientX - 30 + "px";
+dragPreview.style.top  = e.clientY - 100 + "px";  // 100px 위로 띄움
     clearPreview();
 
     const target=document.elementFromPoint(e.clientX,e.clientY);
