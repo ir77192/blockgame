@@ -266,8 +266,12 @@ const gradient = `linear-gradient(135deg, ${c1}, ${c2})`;
 
 document.addEventListener("pointermove",(e)=>{
     if(!dragPreview) return;
-    dragPreview.style.left=e.clientX-30+"px";
-    dragPreview.style.top=e.clientY-30+"px";
+
+    const offsetX = 30;   // 좌우 중심 보정
+    const offsetY = 90;   // 🔥 위로 올리는 거리 (값 키우면 더 위)
+
+    dragPreview.style.left = e.clientX - offsetX + "px";
+    dragPreview.style.top  = e.clientY - offsetY + "px";
     clearPreview();
 
     const target=document.elementFromPoint(e.clientX,e.clientY);
