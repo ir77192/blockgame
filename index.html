@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -35,8 +36,7 @@ body{
     position:relative;
     background:#ecf0f1;
     border-radius:0px;
-    transition:none:
-
+    transition:none;
 }
 .clear-highlight{
     box-shadow:0 0 15px 5px #ffeaa7 inset;
@@ -47,7 +47,6 @@ body{
     from{opacity:1;}
     to{opacity:0.4;}
 }
-
 
 .cell.preview-valid{background:#81ecec;}
 .cell.preview-invalid{background:#ff7675;}
@@ -77,27 +76,23 @@ body{
 <div class="container">
 
 <div class="menu" id="menu">
-
-
-
-<h1 style="color:#ff7675;">Block Game</h1>
-<p>최고 기록: <span id="bestScore">0</span></p>
-<br>
-<button onclick="startGame()">게임 시작</button>
+    <h1 style="color:#ff7675;">Block Game</h1>
+    <p>최고 기록: <span id="bestScore">0</span></p>
+    <br>
+    <button onclick="startGame()">게임 시작</button>
 </div>
 
 <div class="game" id="game">
-<div class="score">점수: <span id="score">0</span></div>
-<div class="combo" id="combo"></div>
-<div class="board" id="board"></div>
-<div class="blocks" id="blocks"></div>
-<br>
-<button onclick="goMenu()">메뉴</button>
+    <div class="score">점수: <span id="score">0</span></div>
+    <div class="combo" id="combo"></div>
+    <div class="board" id="board"></div>
+    <div class="blocks" id="blocks"></div>
+    <br>
+    <button onclick="goMenu()">메뉴</button>
 </div>
 
 </div>
 
-<!-- 🔊 효과음 -->
 <audio id="placeSound" src="place.mp3"></audio>
 <audio id="clearSound" src="clear.mp3"></audio>
 <audio id="overSound" src="over.mp3"></audio>
@@ -107,8 +102,6 @@ const SIZE=8;
 let board=[],score=0,combo=0;
 let bestScore=localStorage.getItem("bestScore")||0;
 let currentBlocks = [];
-
-
 
 document.getElementById("bestScore").textContent=bestScore;
 
@@ -127,30 +120,21 @@ const shapes=[
 ];
 
 const colors = [
-"#ff0000", // 빨강
-"#ff7f00", // 주황
-"#ffff00", // 노랑
-"#00ff00", // 초록
-"#0000ff", // 파랑
-"#000080", // 남색
-"#8000ff"  // 보라
+"#ff0000","#ff7f00","#ffff00","#00ff00",
+"#0000ff","#000080","#8000ff"
 ];
+
 let draggingShape=null;
 let dragPreview=null;
 let failCount = 0;
 
-
 function startGame(){
     document.getElementById("menu").style.display="none";
     document.getElementById("game").style.display="block";
-
-    // 🔥 오디오 활성화용
     document.getElementById("placeSound").play().then(()=>{
         document.getElementById("placeSound").pause();
         document.getElementById("placeSound").currentTime=0;
     }).catch(()=>{});
-
-
     init();
 }
 
@@ -161,8 +145,7 @@ function goMenu(){
 
 function init(){
     board=Array(SIZE).fill().map(()=>Array(SIZE).fill(null));
-    score=0;combo=0;
-    failCount=0;
+    score=0;combo=0;failCount=0;
     updateScore();
     drawBoard();
     generateBlocks();
@@ -175,10 +158,7 @@ function drawBoard(){
         for(let c=0;c<SIZE;c++){
             const cell=document.createElement("div");
             cell.className="cell";
-
-           if(board[r][c]){
-    cell.style.background = board[r][c];
-}
+            if(board[r][c]) cell.style.background=board[r][c];
             cell.dataset.r=r;
             cell.dataset.c=c;
             boardDiv.appendChild(cell);
@@ -186,30 +166,23 @@ function drawBoard(){
     }
 }
 
-
 function generateBlocks(){
-    const blocksDiv = document.getElementById("blocks");
-    blocksDiv.innerHTML = "";
-
-    let validSet = false;
+    const blocksDiv=document.getElementById("blocks");
+    blocksDiv.innerHTML="";
+    let validSet=false;
 
     while(!validSet){
-        currentBlocks = [];
-
+        currentBlocks=[];
         for(let i=0;i<3;i++){
-            const shape = JSON.parse(JSON.stringify(
+            const shape=JSON.parse(JSON.stringify(
                 shapes[Math.floor(Math.random()*shapes.length)]
             ));
             currentBlocks.push(shape);
         }
-
         for(let shape of currentBlocks){
             for(let r=0;r<SIZE;r++){
                 for(let c=0;c<SIZE;c++){
-                    if(canPlace(shape,r,c)){
-                        validSet = true;
-                        break;
-                    }
+                    if(canPlace(shape,r,c)){validSet=true;break;}
                 }
                 if(validSet) break;
             }
@@ -218,59 +191,81 @@ function generateBlocks(){
     }
 
     currentBlocks.forEach(shape=>{
+        const c1=colors[Math.floor(Math.random()*colors.length)];
+        const c2=colors[Math.floor(Math.random()*colors.length)];
+        const gradient=`linear-gradient(135deg, ${c1}, ${c2})`;
 
- const c1 = colors[Math.floor(Math.random()*colors.length)];
-const c2 = colors[Math.floor(Math.random()*colors.length)];
-const gradient = `linear-gradient(135deg, ${c1}, ${c2})`;
-
-        const blockDiv = document.createElement("div");
-        blockDiv.className = "block";
-        blockDiv.style.gridTemplateColumns = "repeat(" + shape[0].length + ",24px)";
-        blockDiv.style.gridTemplateRows = "repeat(" + shape.length + ",24px)";
-
+        const blockDiv=document.createElement("div");
+        blockDiv.className="block";
+        blockDiv.style.gridTemplateColumns="repeat("+shape[0].length+",24px)";
+        blockDiv.style.gridTemplateRows="repeat("+shape.length+",24px)";
 
         shape.forEach(row=>{
             row.forEach(cell=>{
-                const mini = document.createElement("div");
-               if(cell) mini.style.background = gradient;
-                else mini.style.visibility = "hidden";
+                const mini=document.createElement("div");
+                if(cell) mini.style.background=gradient;
+                else mini.style.visibility="hidden";
                 blockDiv.appendChild(mini);
             });
         });
 
-        blockDiv.addEventListener("pointerdown", function(){
+        blockDiv.addEventListener("pointerdown", function(e){
+            draggingShape={shape, color:gradient, element:blockDiv};
 
-            draggingShape = {shape, color: gradient, element:blockDiv};
+            dragPreview=blockDiv.cloneNode(true);
+            dragPreview.style.position="fixed";
+            dragPreview.style.opacity="0.85";
+            dragPreview.style.pointerEvents="none";
+            dragPreview.style.zIndex="9999";
 
-            dragPreview = blockDiv.cloneNode(true);
-            dragPreview.style.position = "fixed";
-            dragPreview.style.opacity = "0.7";
-            dragPreview.style.pointerEvents = "none";
-
-            const boardCell = document.querySelector(".cell");
+            const boardCell=document.querySelector(".cell");
             if(boardCell){
-                const boardSize = boardCell.getBoundingClientRect().width;
-                const scale = boardSize / 24;
-                dragPreview.style.transform = "scale(" + scale + ")";
-                dragPreview.style.transformOrigin = "top left";
+                const boardSize=boardCell.getBoundingClientRect().width;
+                const scale=boardSize/24;
+                dragPreview.style.transform="scale("+scale+")";
+                dragPreview.style.transformOrigin="top left";
+
+                const cols=shape[0].length;
+                const rows=shape.length;
+                const cellPx=boardSize;
+                const gapPx=2;
+
+                // 커서 위쪽에 표시: X는 블록 중앙, Y는 블록 전체 높이 + 여백만큼 위로
+                draggingShape.offsetX=(cols*cellPx+(cols-1)*gapPx)/2;
+                draggingShape.offsetY=(rows*cellPx+(rows-1)*gapPx)+16;
             }
 
             document.body.appendChild(dragPreview);
         });
 
         blocksDiv.appendChild(blockDiv);
-
     });
+}
 
+// 미리보기 블록의 좌상단 좌표를 계산해서 해당 위치의 셀을 반환
+function getCellFromPreviewPosition(clientX, clientY){
+    const ox = draggingShape?.offsetX ?? 30;
+    const oy = draggingShape?.offsetY ?? 60;
+    const previewLeft = clientX - ox;
+    const previewTop  = clientY - oy;
+    const boardCell = document.querySelector(".cell");
+    if(!boardCell) return null;
+    const cellSize = boardCell.getBoundingClientRect().width;
+    const hitX = previewLeft + cellSize / 2;
+    const hitY = previewTop  + cellSize / 2;
+    return document.elementFromPoint(hitX, hitY);
 }
 
 document.addEventListener("pointermove",(e)=>{
     if(!dragPreview) return;
-    dragPreview.style.left=e.clientX-30+"px";
-    dragPreview.style.top=e.clientY-30+"px";
-    clearPreview();
 
-    const target=document.elementFromPoint(e.clientX,e.clientY);
+    const ox = draggingShape?.offsetX ?? 30;
+    const oy = draggingShape?.offsetY ?? 60;
+    dragPreview.style.left = e.clientX - ox + "px";
+    dragPreview.style.top  = e.clientY - oy + "px";
+
+    clearPreview();
+    const target = getCellFromPreviewPosition(e.clientX, e.clientY);
     if(target && target.classList.contains("cell")){
         const r=parseInt(target.dataset.r);
         const c=parseInt(target.dataset.c);
@@ -280,33 +275,18 @@ document.addEventListener("pointermove",(e)=>{
 
 document.addEventListener("pointerup",(e)=>{
     if(!draggingShape) return;
-    const target=document.elementFromPoint(e.clientX,e.clientY);
+    const target = getCellFromPreviewPosition(e.clientX, e.clientY);
     if(target && target.classList.contains("cell")){
         const r=parseInt(target.dataset.r);
         const c=parseInt(target.dataset.c);
         if(canPlace(draggingShape.shape,r,c)){
-            if (navigator.vibrate) navigator.vibrate(50);
-
+            if(navigator.vibrate) navigator.vibrate(50);
             placeShape(draggingShape.shape,r,c,draggingShape.color);
-document.getElementById("placeSound").play().catch(()=>{});
-
-
-// 사용한 블록 제거
-draggingShape.element.remove();
-
-// 🔥 currentBlocks에서도 제거
-currentBlocks = currentBlocks.filter(s => s !== draggingShape.shape);
-
-
-// 블록이 0개면 새로 생성
-if(document.getElementById("blocks").children.length===0){
-    generateBlocks();
-}
-
-setTimeout(()=>{
-    checkGameOver();
-},300);
-
+            document.getElementById("placeSound").play().catch(()=>{});
+            draggingShape.element.remove();
+            currentBlocks=currentBlocks.filter(s=>s!==draggingShape.shape);
+            if(document.getElementById("blocks").children.length===0) generateBlocks();
+            setTimeout(()=>{checkGameOver();},300);
         }
     }
     draggingShape=null;
@@ -354,87 +334,51 @@ function placeShape(shape,r,c,color){
     });
 
     score+=10;
-    if (navigator.vibrate) navigator.vibrate(40);
+    if(navigator.vibrate) navigator.vibrate(40);
 
-    let cleared = clearLines();
+    let cleared=clearLines();
 
-if (cleared > 0) {
-
-    combo++;
-    failCount = 0;   // 성공하면 실패 초기화
-
-    score += cleared * 50 * combo;
-
-    document.getElementById("combo").textContent = `콤보 x${combo}`;
-    document.getElementById("clearSound").play().catch(()=>{});
-
-} else {
-
-    failCount++;   // 실패 증가
-
-    if (failCount >= 3) {
-        combo = 0;
-        failCount = 0;
-        document.getElementById("combo").textContent = "";
+    if(cleared>0){
+        combo++;
+        failCount=0;
+        score+=cleared*50*combo;
+        document.getElementById("combo").textContent=`콤보 x${combo}`;
+        document.getElementById("clearSound").play().catch(()=>{});
+    } else {
+        failCount++;
+        if(failCount>=3){
+            combo=0;failCount=0;
+            document.getElementById("combo").textContent="";
+        }
     }
 
-}
-
-setTimeout(()=>{
-    drawBoard();
-    updateScore();
-},300);
-
-
-
-
+    setTimeout(()=>{drawBoard();updateScore();},300);
 }
 
 function clearLines(){
     let linesToClear=[];
-
-    // 가로 체크
     for(let r=0;r<SIZE;r++){
         if(board[r].every(v=>v)){
-            for(let c=0;c<SIZE;c++){
-                linesToClear.push([r,c]);
-            }
+            for(let c=0;c<SIZE;c++) linesToClear.push([r,c]);
         }
     }
-
-    // 세로 체크
     for(let c=0;c<SIZE;c++){
         if(board.every(row=>row[c])){
-            for(let r=0;r<SIZE;r++){
-                linesToClear.push([r,c]);
-            }
+            for(let r=0;r<SIZE;r++) linesToClear.push([r,c]);
         }
     }
-
     if(linesToClear.length===0) return 0;
 
-    // 🔥 먼저 강조 표시
     linesToClear.forEach(([r,c])=>{
         const index=r*SIZE+c;
         const el=document.getElementById("board").children[index];
         el.classList.add("clear-highlight");
     });
-
-    // 🔥 0.3초 후 삭제
     setTimeout(()=>{
-        linesToClear.forEach(([r,c])=>{
-            board[r][c]=null;
-        });
+        linesToClear.forEach(([r,c])=>{board[r][c]=null;});
     },300);
 
-    return linesToClear.length>0 ? 1 : 0;
-}
-
-
-function animate(r,c){
-    const index=r*SIZE+c;
-    const el=document.getElementById("board").children[index];
-    el.classList.add("clear-anim");
+    return linesToClear.length>0?1:0;
 }
 
 function updateScore(){
@@ -447,29 +391,19 @@ function updateScore(){
 }
 
 function checkGameOver(){
-
-    if(currentBlocks.length === 0) return false;
-
+    if(currentBlocks.length===0) return false;
     for(let shape of currentBlocks){
         for(let r=0;r<SIZE;r++){
             for(let c=0;c<SIZE;c++){
-                if(canPlace(shape,r,c)){
-                    return false; // 하나라도 놓을 수 있으면 계속
-                }
+                if(canPlace(shape,r,c)) return false;
             }
         }
     }
-
     document.getElementById("overSound").play().catch(()=>{});
-
-    setTimeout(()=>{
-        alert("게임 오버!");
-        goMenu();
-    },200);
-
+    setTimeout(()=>{alert("게임 오버!");goMenu();},200);
     return true;
 }
-
 </script>
 </body>
 </html>
+```
